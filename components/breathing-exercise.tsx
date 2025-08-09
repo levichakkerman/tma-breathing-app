@@ -194,19 +194,22 @@ export default function BreathingExercise({ program, duration, onBack, onFinish 
 
       <div className="flex-1 flex flex-col items-center justify-center">
         {/* Breathing circle */}
+        {/* Внешний контейнер без 3D — создаёт отдельный stacking context */}
         <div
-          className="relative flex items-center justify-center mb-8"
-          style={{
-            height: "280px",
-            width: "280px",
-            margin: "0 auto",
-            perspective: "1000px",
-            transformStyle: "preserve-3d",
-            backfaceVisibility: "hidden",
-          }}
+          className="relative mb-8"
+          style={{ height: "280px", width: "280px", margin: "0 auto", isolation: "isolate" }}
         >
-          {/* Glow effect - placed first so it's behind the main circle */}
-          <motion.div
+          {/* Внутренний 3D-контейнер только для слоёв круга */}
+          <div
+            className="absolute inset-0 flex items-center justify-center"
+            style={{
+              perspective: "1000px",
+              transformStyle: "preserve-3d",
+              backfaceVisibility: "hidden",
+            }}
+          >
+            {/* Glow effect - placed first so it's behind the main circle */}
+            <motion.div
             animate={{
               opacity: 0.6,
               scale: (getCircleSize() / 100) * 1.15,
@@ -230,7 +233,7 @@ export default function BreathingExercise({ program, duration, onBack, onFinish 
                 duration: 1,
               },
             }}
-            className="absolute rounded-full"
+            className="absolute rounded-full z-0"
             style={{
               background: "radial-gradient(circle, rgba(227,141,172,0.8) 0%, rgba(191,177,199,0.2) 70%)",
               filter: "blur(20px)",
@@ -239,8 +242,8 @@ export default function BreathingExercise({ program, duration, onBack, onFinish 
             }}
           />
 
-          {/* Main circle */}
-          <motion.div
+            {/* Main circle */}
+            <motion.div
             animate={{
               scale: getCircleSize() / 100,
               rotateY: currentPhase === "inhale" ? [0, 2, 0] : currentPhase === "exhale" ? [0, -2, 0] : 0,
@@ -271,33 +274,38 @@ export default function BreathingExercise({ program, duration, onBack, onFinish 
                 ease: "easeInOut",
               },
             }}
-            className="absolute rounded-full"
+            className="absolute rounded-full z-10"
             style={{
               background: "radial-gradient(circle, #e38dac 0%, #bfb1c7 100%)",
               boxShadow: "0 8px 32px rgba(227, 141, 172, 0.4)",
               transformOrigin: "center center",
               willChange: "transform",
-              zIndex: 1,
+              zIndex: 10,
             }}
-          />
+            />
+          </div>
 
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentPhase}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.4 }}
-              className="relative z-10 text-white font-medium text-lg px-4 py-2 rounded-full"
-              style={{
-                background: "rgba(0,0,0,0.2)",
-                backdropFilter: "blur(4px)",
-                textShadow: "0 1px 2px rgba(0,0,0,0.3)",
-              }}
-            >
-              {phaseMessages[currentPhase]}
-            </motion.div>
-          </AnimatePresence>
+          {/* Overlay для текста — отдельный слой вне 3D-контейнера */}
+          <div className="absolute inset-0 grid place-items-center z-[60] pointer-events-none"
+               style={{contain: "paint", willChange: "transform"}}>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentPhase}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.3 }}
+                className="text-white font-medium text-lg px-4 py-2 rounded-full shadow-sm"
+                style={{
+                  background: "rgba(0,0,0,0.25)",
+                  backdropFilter: "blur(4px)",
+                  textShadow: "0 1px 2px rgba(0,0,0,0.35)",
+                }}
+              >
+                {phaseMessages[currentPhase]}
+              </motion.div>
+            </AnimatePresence>
+          </div>
         </div>
 
         {/* Stats */}
