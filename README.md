@@ -1,30 +1,96 @@
-# Telegram mini app
+## Дыхательные практики — Telegram Mini App (Next.js)
 
-*Automatically synced with your [v0.dev](https://v0.dev) deployments*
+Простое и приятное приложение с дыхательными техниками для снижения тревожности и улучшения концентрации. Разработано на Next.js (App Router), оптимизировано под мобильные устройства и может быть встроено в Telegram Mini Apps.
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/yarponomarev-projects/v0-telegram-mini-app)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.dev-black?style=for-the-badge)](https://v0.dev/chat/projects/pZV1SDcQzQ9)
+### Возможности
 
-## Overview
+- **Выбор программы**: успокоение (4-7-8), концентрация (box breathing 4-4-4-4), расслабление, сон.
+- **Выбор длительности**: от 1 до 30 минут.
+- **Плавная анимация дыхания**: увеличивающийся/уменьшающийся круг с подсказками фаз.
+- **Индикатор прогресса** и счётчик завершённых циклов.
+- **Пауза/продолжение** во время сессии.
+- **Адаптация под мобильные устройства** и ТМА.
 
-This repository will stay in sync with your deployed chats on [v0.dev](https://v0.dev).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.dev](https://v0.dev).
+### Технологический стек
 
-## Deployment
+- **Next.js 15** (App Router), **React 19**, **TypeScript 5**
+- **Tailwind CSS 3** + **tailwindcss-animate**
+- **Framer Motion** — анимации
+- **lucide-react** — иконки
+- **next-themes** — провайдер тем (подключён, готов к расширению)
 
-Your project is live at:
+### Структура проекта (основное)
 
-**[https://vercel.com/yarponomarev-projects/v0-telegram-mini-app](https://vercel.com/yarponomarev-projects/v0-telegram-mini-app)**
+```
+app/
+  layout.tsx        // корневой макет приложения, метаданные, шрифты
+  page.tsx          // главный экран с пошаговым сценарием: программа → таймер → сессия
+components/
+  program-selection.tsx   // выбор программы
+  timer-selection.tsx     // выбор длительности
+  breathing-exercise.tsx  // сама сессия дыхания и анимации
+lib/
+  utils.ts          // утилиты (слияние классов)
+styles/ | app/globals.css // глобальные стили и переменные
+```
 
-## Build your app
+### Требования
 
-Continue building your app on:
+- Node.js >= 18.18 (рекомендуется 20+)
+- Менеджер пакетов: pnpm, npm или yarn (выберите один и придерживайтесь его)
 
-**[https://v0.dev/chat/projects/pZV1SDcQzQ9](https://v0.dev/chat/projects/pZV1SDcQzQ9)**
+### Установка и запуск
 
-## How It Works
+С pnpm:
 
-1. Create and modify your project using [v0.dev](https://v0.dev)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+```bash
+pnpm install
+pnpm dev
+```
+
+С npm:
+
+```bash
+npm install
+npm run dev
+```
+
+Приложение поднимется на `http://localhost:3000`.
+
+### Скрипты
+
+- `dev`: запуск дев-сервера Next.js
+- `build`: сборка приложения
+- `start`: запуск собранного приложения
+- `lint`: запуск линтера Next.js
+
+### Сборка и прод
+
+```bash
+pnpm build
+pnpm start
+```
+
+Либо с npm:
+
+```bash
+npm run build
+npm start
+```
+
+### Деплой
+
+- Рекомендуется деплой на Vercel: импорт репозитория, авто-сборка Next.js.
+- Также можно развернуть на любом Node-хостинге, где доступен запуск `next start`.
+
+### Встраивание в Telegram Mini Apps (опционально)
+
+Приложение уже оптимизировано для мобильных устройств и может быть использовано как Web App внутри Telegram. Базовая интеграция не требует специальных ключей. Для продвинутой интеграции (настройка темы ТМА, управление заголовком, main button и пр.) добавьте инициализацию `Telegram.WebApp` на клиентской стороне и настроьте политику безопасности (CSP) и HTTPS.
+
+Полезные ссылки:
+- [Документация Telegram Mini Apps](https://core.telegram.org/bots/webapps)
+- [Документация Next.js по деплою](https://nextjs.org/docs/app/building-your-application/deploying)
+
+### Лицензия
+
+Свободно используйте и модифицируйте в рамках ваших задач. Если требуется формальная лицензия — добавьте файл `LICENSE`.
